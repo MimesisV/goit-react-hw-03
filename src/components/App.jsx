@@ -1,45 +1,31 @@
 import { useState, useEffect } from 'react';
 
-import Description from './Description/Description';
-import Options from './Options/Options';
-import Feedback from "./Feedback/Feedback";
-import Notification from "./Notification/Notification";
+import ContactList from './ContactList/ContactList';
+
 
 export default function App() {
-  const initialValues = {
-    good: 0,
-    neutral: 0,
-    bad: 0,
-  };
+  const initialValues = [
+    { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+    { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+    { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+    { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+  ];
 
-  const [values, setValues] = useState(() => {
-    const storedValues = JSON.parse(localStorage.getItem("feedback"));
-    return storedValues !== null ? storedValues : initialValues});
+  const [contacts, setContacts] = useState(() => {
+    const localData = localStorage.getItem('contact');
+    return localData ? JSON.parse(localData) : initialValues;
+  });
 
   useEffect(() => {
-    localStorage.setItem('feedback', JSON.stringify(values));
-  }, [values]);
-
-  const updateFeedback = feedback => {
-    setValues({
-      ...values,
-      [feedback]: values[feedback] +1
-    })
-  }
-
-  const resetFeedback = ()=> {
-    setValues(initialValues);
-    localStorage.setItem('feedback', JSON.stringify(initialValues));
-    }
-  
-  const total = values.good + values.neutral + values.bad;
-  const positiveFeedback = total > 0 ? Math.round((values.good / total) * 100) : 0;
+    localStorage.setItem('contact', JSON.stringify(contacts));
+  }, [contacts]);
 
   return (
     <div>
-      <Description />
-      <Options onUpdate={updateFeedback} total={total} onReset={resetFeedback}/>
-      {total === 0 ? <Notification/> : <Feedback data={values} total={total} positive={positiveFeedback}/>}
+      <h1>Phonebook</h1>
+      {/* <ContactForm /> */}
+      {/* <SearchBox /> */}
+      <ContactList data={contacts} />
     </div>
   );
 }
