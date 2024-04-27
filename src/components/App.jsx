@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 import ContactList from './ContactList/ContactList';
 import SearchBox from './SearchBox/SearchBox';
-
+import ContactForm from './ContactForm/ContactForm';
 
 export default function App() {
   const initialValues = [
@@ -23,14 +23,29 @@ export default function App() {
     localStorage.setItem('contact', JSON.stringify(contacts));
   }, [contacts]);
 
-  const filterContacts = contacts.filter(contact => contact.name.toLowerCase().includes(filterValue.toLowerCase()))
+  const filterContacts = contacts.filter(contact =>
+    contact.name.toLowerCase().includes(filterValue.toLowerCase())
+  );
+
+  const handleAddContact = newContact => {
+    setContacts(() => {
+      return [...contacts, newContact];
+    });
+  };
+
+  const handleDeleteContact = id => {
+    setContacts(() => {
+      return contacts.filter( contact => contact.id !== id)
+    })
+  }
 
   return (
     <div>
       <h1>Phonebook</h1>
-      {/* <ContactForm /> */}
+      <ContactForm handleAddContact={handleAddContact} contacts={contacts}/>
       <SearchBox filterValue={filterValue} setFiletrValue={setFiletrValue} />
-      <ContactList data={filterContacts} />
+      <ContactList data={filterContacts} handleDeleteContact={handleDeleteContact}/>
     </div>
   );
 }
+
